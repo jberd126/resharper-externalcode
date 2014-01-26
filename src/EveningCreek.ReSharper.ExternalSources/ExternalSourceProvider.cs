@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using JetBrains.Application;
 using JetBrains.Application.FileSystemTracker;
 using JetBrains.Application.Settings;
@@ -12,25 +11,25 @@ using JetBrains.ReSharper.Psi.Impl;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.Util;
 
-namespace EveningCreek.ReSharper.ExternalCode
+namespace EveningCreek.ReSharper.ExternalSources
 {
     [SolutionComponent]
-    public class ExternalCodeProvider : IProjectPsiModuleProviderFilter
+    public class ExternalSourceProvider : IProjectPsiModuleProviderFilter
     {
+        private readonly ChangeManager _changeManager;
+        private readonly DocumentManager _documentManager;
+        private readonly IFileSystemTracker _fileSystemTracker;
         private readonly IProjectFileExtensions _projectFileExtensions;
         private readonly PsiProjectFileTypeCoordinator _projectFileTypeCoordinator;
-        private readonly ChangeManager _changeManager;
-        private readonly IFileSystemTracker _fileSystemTracker;
-        private readonly IShellLocks _shellLocks;
-        private readonly DocumentManager _documentManager;
         private readonly ISettingsStore _settingsStore;
+        private readonly IShellLocks _shellLocks;
 
-        public ExternalCodeProvider(
-            IProjectFileExtensions projectFileExtensions, 
-            PsiProjectFileTypeCoordinator projectFileTypeCoordinator, 
-            ChangeManager changeManager, 
-            IFileSystemTracker fileSystemTracker, 
-            IShellLocks shellLocks, 
+        public ExternalSourceProvider(
+            IProjectFileExtensions projectFileExtensions,
+            PsiProjectFileTypeCoordinator projectFileTypeCoordinator,
+            ChangeManager changeManager,
+            IFileSystemTracker fileSystemTracker,
+            IShellLocks shellLocks,
             DocumentManager documentManager,
             ISettingsStore settingsStore)
         {
@@ -45,17 +44,17 @@ namespace EveningCreek.ReSharper.ExternalCode
 
         public JetTuple<IProjectPsiModuleHandler, IPsiModuleDecorator> OverrideHandler(Lifetime lifetime, IProject project, IProjectPsiModuleHandler handler)
         {
-            if(project.ProjectProperties.ProjectKind != ProjectKind.REGULAR_PROJECT || 
-               project.ProjectFileLocation.IsNullOrEmpty())
+            if (project.ProjectProperties.ProjectKind != ProjectKind.REGULAR_PROJECT ||
+                project.ProjectFileLocation.IsNullOrEmpty())
             {
                 return null;
             }
 
-            ExternalCodeSettingsKey settingsKey = _settingsStore
+            var settingsKey = _settingsStore
                 .BindToContextTransient(ContextRange.ApplicationWide)
-                .GetKey<ExternalCodeSettingsKey>(SettingsOptimization.OptimizeDefault);
+                .GetKey<ExternalSourceSettingsKey>(SettingsOptimization.OptimizeDefault);
             FileSystemPath[] externalCodeFilesPaths = settingsKey
-                .ExternalCodePaths
+                .Paths
                 .EnumIndexedValues()
                 .Select(x => project.Location.Combine(x.Value))
                 .ToArray();

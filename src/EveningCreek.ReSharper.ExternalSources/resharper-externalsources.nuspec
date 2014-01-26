@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>ReSharper.ExternalSources</id>
+    <version>1.0.0</version>
+    <authors>Jason Morse</authors>
+    <owners>Jason Morse</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectUrl>https://github.com/jberd126/resharper-externalsources</projectUrl>
+    <licenseUrl>https://github.com/jberd126/resharper-externalsources/master/license.txt</licenseUrl>
+    <iconUrl>https://github.com/jberd126/resharper-externalsources/master/icon.png</iconUrl>
+	<copyright>Copyright &#x00A9; 2014 Jason Morse</copyright>
+    <description>Code analysis support for external sources.</description>
+    <releaseNotes>Initial release.</releaseNotes>
+    <dependencies>
+      <dependency id="ReSharper" version="8.1" />
+    </dependencies>
+    <tags>resharper external sources</tags>
+  </metadata>
+  <files>
+    <!-- ReSharper 8.1 -->
+    <file src="bin\Release_v81\resharper-externalsources.dll"
+          target="ReSharper\v8.1\plugins\" />
+  </files>
+</package>

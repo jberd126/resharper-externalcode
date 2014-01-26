@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
@@ -19,28 +18,35 @@ using JetBrains.UI.Controls;
 using JetBrains.UI.Options;
 using JetBrains.UI.Options.Helpers;
 
-namespace EveningCreek.ReSharper.ExternalCode
+namespace EveningCreek.ReSharper.ExternalSources
 {
     /// <summary>
-    /// Options page for external code files shown in "Code Inspection" category group.
+    ///     Options page for external sources shown in "Code Inspection" category group.
     /// </summary>
     /// <remarks>
-    /// Sequence manually set to be just after "Generated Code" options which has sequence value of 1.
+    ///     The options page intended to display just after "Generated Code" options which has sequence value of 1.
     /// </remarks>
-    [OptionsPage(Pid, "Include External Code", typeof(ExternalSourcesThemedIcons.ExternalSources), ParentId = "CodeInspection", Sequence = 1.01)]
-    public class ExternalCodeOptionsPage : AStackPanelOptionsPage
+    [OptionsPage(Pid, "External Sources", typeof(ExternalSourcesThemedIcons.ExternalSources), ParentId = "CodeInspection", Sequence = 1.01)]
+    public class ExternalSourceOptionsPage : AStackPanelOptionsPage
     {
-        public const string Pid = "CodeInspectionExternalSettings";
+        public const string Pid = "CodeInspectionExternalSourceSettings";
 
+        private const int _margin = 10;        
         private readonly FormValidators _formValidators;
         private readonly Lifetime _lifetime;
         private readonly IMainWindow _mainWindow;
         private readonly OptionsSettingsSmartContext _settings;
         private readonly IWindowsHookManager _windowsHookManager;
         private StringCollectionEdit _externalCodePathsCollectionEdit;
-        private const int _margin = 10;
 
-        public ExternalCodeOptionsPage(IUIApplication environment, OptionsSettingsSmartContext settings, Lifetime lifetime, IShellLocks shellLocks, IWindowsHookManager windowsHookManager, FormValidators formValidators, IMainWindow mainWindow = null)
+        public ExternalSourceOptionsPage(
+            IUIApplication environment,
+            OptionsSettingsSmartContext settings,
+            Lifetime lifetime,
+            IShellLocks shellLocks,
+            IWindowsHookManager windowsHookManager,
+            FormValidators formValidators,
+            IMainWindow mainWindow = null)
             : base(lifetime, environment, Pid)
         {
             _settings = settings;
@@ -61,7 +67,7 @@ namespace EveningCreek.ReSharper.ExternalCode
                                  {
                                      AutoSizeMode = AutoSizeMode.GrowAndShrink,
                                      Margin = Padding.Empty,
-                                     Padding = Padding.Empty, 
+                                     Padding = Padding.Empty,
                                      Size = ClientSize
                                  };
                 tablePanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
@@ -86,56 +92,45 @@ namespace EveningCreek.ReSharper.ExternalCode
                 EventHandler handler = (sender, args) => sizeEvent.FireIncoming();
                 _lifetime.AddBracket(() => SizeChanged += handler, () => SizeChanged -= handler);
 
-                var titleLabel = new Controls.Label("Add folder paths relative to project to external code files.")
-                             {
-                                 AutoSize = true,
-                                 Dock = DockStyle.Fill
-                             };
+                var titleLabel = new Controls.Label("External source paths relative to project.")
+                                 {
+                                     AutoSize = true,
+                                     Dock = DockStyle.Fill
+                                 };
                 tablePanel.Controls.Add(titleLabel);
 
-                string[] externalCodePaths = _settings.EnumIndexedValues(ExternalCodeSettingsAccessor.ExternalCode).ToArray();
-                _externalCodePathsCollectionEdit = new StringCollectionEdit(Environment, "External code paths:", null, _mainWindow, _windowsHookManager, _formValidators)
+                string[] externalCodePaths = _settings.EnumIndexedValues(ExternalSourceSettingsAccessor.Paths).ToArray();
+                _externalCodePathsCollectionEdit = new StringCollectionEdit(Environment, "External source paths:", null, _mainWindow, _windowsHookManager, _formValidators)
                                                    {
                                                        Dock = DockStyle.Fill
                                                    };
                 _externalCodePathsCollectionEdit.Items.Value = externalCodePaths;
-                _externalCodePathsCollectionEdit.Items.PropertyChanged += HandleExternalCodePathItemPropertyChanged;
                 tablePanel.Controls.Add(_externalCodePathsCollectionEdit, 0, 1);
             }
         }
 
-        private void HandleExternalCodePathItemPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            //            string invalidMask = _externalCodePathsCollectionEdit.Items.Value.FirstOrDefault(path => !IsValidPath(path));
-            //            if (invalidMask != null)
-            //            {
-            //                MessageBox.ShowError(string.Format("Path \"{0}\" is not valid relative or absolute path.", invalidMask), "Cannot add external code path.");
-            //                _externalCodePathsCollectionEdit.Items.Value = _externalCodePathsCollectionEdit.Items.Value.Where(s => s != invalidMask).ToArray();
-            //            })
-        }
-
         /// <summary>
-        /// Invoked when OK button in the options dialog is pressed.
-        /// If the page returns <c>false</c>, the the options dialog won't be closed, and focus will be put into this page.
+        ///     Invoked when OK button in the options dialog is pressed.
+        ///     If the page returns <c>false</c>, the the options dialog won't be closed, and focus will be put into this page.
         /// </summary>
         public override bool OnOk()
         {
-            Expression<Func<ExternalCodeSettingsKey, IIndexedEntry<string, string>>> generatedFileMasks = key => key.ExternalCodePaths;
+            Expression<Func<ExternalSourceSettingsKey, IIndexedEntry<string, string>>> generatedFileMasks = key => key.Paths;
 
-            string[] newValues = _externalCodePathsCollectionEdit.Items.Value;
-            var addedAlreadyGeneratedFileMasks = new HashSet<string>();
-            foreach(string entryIndex in _settings.EnumEntryIndices(generatedFileMasks))
+            string[] addedPaths = _externalCodePathsCollectionEdit.Items.Value;
+            var currentPaths = new HashSet<string>();
+            foreach(string currentPath in _settings.EnumEntryIndices(generatedFileMasks))
             {
-                if (!newValues.Contains(entryIndex))
+                if(!addedPaths.Contains(currentPath))
                 {
-                    _settings.RemoveIndexedValue(generatedFileMasks, entryIndex);
+                    _settings.RemoveIndexedValue(generatedFileMasks, currentPath);
                 }
                 else
                 {
-                    addedAlreadyGeneratedFileMasks.Add(entryIndex);
+                    currentPaths.Add(currentPath);
                 }
             }
-            foreach (string entryIndex in newValues.Where(x => !addedAlreadyGeneratedFileMasks.Contains(x)))
+            foreach(string entryIndex in addedPaths.Where(x => !currentPaths.Contains(x)))
             {
                 _settings.SetIndexedValue(generatedFileMasks, entryIndex, entryIndex);
             }

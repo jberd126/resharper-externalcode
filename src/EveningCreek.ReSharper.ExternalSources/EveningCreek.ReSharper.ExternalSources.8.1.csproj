@@ -48,7 +48,6 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -82,8 +81,8 @@
   <Target Name="_BuildPackage" DependsOnTargets="CheckPrerequisites">
     <PropertyGroup>
       <PackageSpec>resharper-externalsources.nuspec</PackageSpec>
-      <_BuildPackageOutputPath>$([System.IO.Path]::Combine($(MSBuildProjectDirectory), "..\..\install"))</_BuildPackageOutputPath>
-      <_BuildPackageCommand>$(NuGetCommand) pack "$(PackageSpec)" -OutputDirectory "$(_BuildPackageOutputPath)" -NoPackageAnalysis</_BuildPackageCommand>
+      <_BuildPackageOutputPath>$(MSBuildProjectDirectory)\..\..\install</_BuildPackageOutputPath>
+      <_BuildPackageCommand>$(NuGetCommand) pack "$(PackageSpec)" -OutputDirectory "$(_BuildPackageOutputPath)" -NoPackageAnalysis -Properties TargetPath=&quot;$(TargetPath);&quot;</_BuildPackageCommand>
     </PropertyGroup>
     <Message Text="Generating NuGet package &quot;$(PackageSpec)&quot; -&gt; &quot;$(_BuildPackageOutputPath)&quot;" />
     <Exec Command="$(_BuildPackageCommand)" LogStandardErrorAsError="true" />

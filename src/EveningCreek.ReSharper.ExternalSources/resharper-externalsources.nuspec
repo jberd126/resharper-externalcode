@@ -19,7 +19,6 @@
   </metadata>
   <files>
     <!-- ReSharper 8.1 -->
-    <file src="bin\Release_v81\resharper-externalsources.dll"
-          target="ReSharper\v8.1\plugins\" />
+    <file src="$TargetPath$" target="ReSharper\v8.1\plugins\" />
   </files>
 </package>

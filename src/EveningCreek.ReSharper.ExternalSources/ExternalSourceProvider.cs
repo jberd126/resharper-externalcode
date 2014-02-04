@@ -68,7 +68,9 @@ namespace EveningCreek.ReSharper.ExternalSources
                 handler,
                 _changeManager,
                 _fileSystemTracker,
-                f => new ExternalSourceFileProperties(project, f), project.GetResolveContext(), externalCodeFilesPaths);
+                f => new ExternalSourceFileProperties(project, f), 
+                project.GetResolveContext(), 
+                externalCodeFilesPaths);
             return new JetTuple<IProjectPsiModuleHandler, IPsiModuleDecorator>(projectHandler, new GeneratedFilesProjectDecorator(projectHandler));
         }
 

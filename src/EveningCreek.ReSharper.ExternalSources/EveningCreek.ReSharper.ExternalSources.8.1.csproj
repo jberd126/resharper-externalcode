@@ -21,8 +21,8 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug_v81\</OutputPath>
-    <BaseIntermediateOutputPath>obj\v81\</BaseIntermediateOutputPath>
+    <OutputPath>bin\v8.1\</OutputPath>
+    <BaseIntermediateOutputPath>obj\v8.1\</BaseIntermediateOutputPath>
     <DefineConstants>TRACE;DEBUG;JET_MODE_ASSERT;RESHARPER_8</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -30,8 +30,8 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release_v81\</OutputPath>
-    <BaseIntermediateOutputPath>obj\v81\</BaseIntermediateOutputPath>
+    <OutputPath>bin\v8.1\</OutputPath>
+    <BaseIntermediateOutputPath>obj\v8.1\</BaseIntermediateOutputPath>
     <DefineConstants>TRACE;RESHARPER_8</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -41,6 +41,8 @@
     <StartProgram>$(VsInstallDir)devenv.exe</StartProgram>
     <StartArguments>/ReSharper.Plugin $(AssemblyName).dll /ReSharper.Internal</StartArguments>
     <StartWorkingDirectory>$(MSBuildProjectDirectory)\$(OutputPath)</StartWorkingDirectory>
+    <NoWarn>
+    </NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
@@ -65,26 +67,31 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\PluginInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="resharper-externalsources.nuspec" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!--<Import Project="EveningCreek.ReSharper.ExternalSources.targets" />-->
   <Import Project="..\packages\JetBrains.ReSharper.SDK.8.1.555\build\JetBrains.ReSharper.SDK.Targets" Condition="Exists('..\packages\JetBrains.ReSharper.SDK.8.1.555\build\JetBrains.ReSharper.SDK.Targets')" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
   <PropertyGroup>
     <BuildDependsOn>
+      _RemoveIncompatibleReSharperReferences;
       $(BuildDependsOn);
-      _BuildPackage;
     </BuildDependsOn>
   </PropertyGroup>
-  <Target Name="_BuildPackage" DependsOnTargets="CheckPrerequisites">
-    <PropertyGroup>
-      <PackageSpec>resharper-externalsources.nuspec</PackageSpec>
-      <_BuildPackageOutputPath>$(MSBuildProjectDirectory)\..\..\install</_BuildPackageOutputPath>
-      <_BuildPackageCommand>$(NuGetCommand) pack "$(PackageSpec)" -OutputDirectory "$(_BuildPackageOutputPath)" -NoPackageAnalysis -Properties TargetPath=&quot;$(TargetPath);&quot;</_BuildPackageCommand>
-    </PropertyGroup>
-    <Message Text="Generating NuGet package &quot;$(PackageSpec)&quot; -&gt; &quot;$(_BuildPackageOutputPath)&quot;" />
-    <Exec Command="$(_BuildPackageCommand)" LogStandardErrorAsError="true" />
+  <Target Name="_RemoveIncompatibleReSharperReferences" Condition=" '$(TargetFrameworkVersion)' == 'v3.5' ">
+	<!-- Remove ReSharper 8.1 SDK for .NET 3.5 references that are compiled against .NET 4.0. -->
+    <Message Text="Removing ReSharper SDK references that are incompatible with .NET v3.5" />
+    <ItemGroup>
+      <_IncompatibleReSharperReference Include="JetBrains.ReSharper.Features.NuGet;JetBrains.Platform.ReSharper.Shell.Extensions;JetBrains.ReSharper.Features.Architecture.yFiles" />
+      <_IncompatibleReSharperReference Include="yWorks.yFilesWPF.Adapter;yWorks.yFilesWPF.Algorithms;yWorks.yFilesWPF.Viewer" />
+      <_IncompatibleReSharperReference Include="NuGet.Core" />
+      <_IncompatibleReSharperReference Include="Microsoft.Web.XmlTransform" />
+      <Reference Remove="@(_IncompatibleReSharperReference)" />
+    </ItemGroup>
   </Target>
 </Project>

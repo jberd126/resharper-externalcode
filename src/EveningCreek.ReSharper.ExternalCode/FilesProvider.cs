@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Application;
 using JetBrains.Application.FileSystemTracker;
 using JetBrains.Application.Settings;
@@ -11,10 +12,10 @@ using JetBrains.ReSharper.Psi.Impl;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.Util;
 
-namespace EveningCreek.ReSharper.ExternalSources
+namespace EveningCreek.ReSharper.ExternalCode
 {
     [SolutionComponent]
-    public class ExternalSourceProvider : IProjectPsiModuleProviderFilter
+    public class FilesProvider : IProjectPsiModuleProviderFilter
     {
         private readonly ChangeManager _changeManager;
         private readonly DocumentManager _documentManager;
@@ -24,7 +25,7 @@ namespace EveningCreek.ReSharper.ExternalSources
         private readonly ISettingsStore _settingsStore;
         private readonly IShellLocks _shellLocks;
 
-        public ExternalSourceProvider(
+        public FilesProvider(
             IProjectFileExtensions projectFileExtensions,
             PsiProjectFileTypeCoordinator projectFileTypeCoordinator,
             ChangeManager changeManager,
@@ -50,14 +51,21 @@ namespace EveningCreek.ReSharper.ExternalSources
                 return null;
             }
 
-            var settingsKey = _settingsStore
+            SettingsKey settingsKey = _settingsStore
                 .BindToContextTransient(ContextRange.ApplicationWide)
-                .GetKey<ExternalSourceSettingsKey>(SettingsOptimization.OptimizeDefault);
-            FileSystemPath[] externalCodeFilesPaths = settingsKey
+                .GetKey<SettingsKey>(SettingsOptimization.OptimizeDefault);
+
+            IEnumerable<string> paths = settingsKey
                 .Paths
                 .EnumIndexedValues()
-                .Select(x => project.Location.Combine(x.Value))
+                .Select(x => x.Value.Trim())
+                .Distinct();
+            FileSystemPath[] fileSystemPaths = paths
+                .Select(FileSystemPath.TryParse)
+                .Where(x => !x.IsEmpty)
+                .Select(x => x.ToAbsolutePath(project.Location))
                 .ToArray();
+
             var projectHandler = new GeneratedFilesProjectHandler(
                 _shellLocks,
                 _documentManager,
@@ -69,8 +77,8 @@ namespace EveningCreek.ReSharper.ExternalSources
                 _changeManager,
                 _fileSystemTracker,
                 f => new ExternalSourceFileProperties(project, f), 
-                project.GetResolveContext(), 
-                externalCodeFilesPaths);
+                project.GetResolveContext(),
+                fileSystemPaths);
             return new JetTuple<IProjectPsiModuleHandler, IPsiModuleDecorator>(projectHandler, new GeneratedFilesProjectDecorator(projectHandler));
         }
 

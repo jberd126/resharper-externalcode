@@ -18,18 +18,18 @@ using JetBrains.UI.Controls;
 using JetBrains.UI.Options;
 using JetBrains.UI.Options.Helpers;
 
-namespace EveningCreek.ReSharper.ExternalSources
+namespace EveningCreek.ReSharper.ExternalCode
 {
     /// <summary>
-    ///     Options page for external sources shown in "Code Inspection" category group.
+    ///     Options page for external code shown in "Code Inspection" category group.
     /// </summary>
     /// <remarks>
     ///     The options page intended to display just after "Generated Code" options which has sequence value of 1.
     /// </remarks>
-    [OptionsPage(Pid, "External Sources", typeof(ExternalSourcesThemedIcons.ExternalSources), ParentId = "CodeInspection", Sequence = 1.01)]
-    public class ExternalSourceOptionsPage : AStackPanelOptionsPage
+    [OptionsPage(Pid, "External Code", typeof(ExternalSourcesThemedIcons.ExternalSources), ParentId = "CodeInspection", Sequence = 1.01)]
+    public class OptionsPage : AStackPanelOptionsPage
     {
-        public const string Pid = "CodeInspectionExternalSourceSettings";
+        public const string Pid = "CodeInspectionExternalCodeSettings";
 
         private const int _margin = 10;        
         private readonly FormValidators _formValidators;
@@ -39,7 +39,7 @@ namespace EveningCreek.ReSharper.ExternalSources
         private readonly IWindowsHookManager _windowsHookManager;
         private StringCollectionEdit _externalCodePathsCollectionEdit;
 
-        public ExternalSourceOptionsPage(
+        public OptionsPage(
             IUIApplication environment,
             OptionsSettingsSmartContext settings,
             Lifetime lifetime,
@@ -92,15 +92,12 @@ namespace EveningCreek.ReSharper.ExternalSources
                 EventHandler handler = (sender, args) => sizeEvent.FireIncoming();
                 _lifetime.AddBracket(() => SizeChanged += handler, () => SizeChanged -= handler);
 
-                var titleLabel = new Controls.Label("External source paths relative to project.")
-                                 {
-                                     AutoSize = true,
-                                     Dock = DockStyle.Fill
-                                 };
+                const string titleCaption = "Add paths to external directories not included in projects. Exclusions specified in Generated Code still apply.";
+                var titleLabel = new Controls.Label(titleCaption) {AutoSize = true, Dock = DockStyle.Fill};
                 tablePanel.Controls.Add(titleLabel);
 
-                string[] externalCodePaths = _settings.EnumIndexedValues(ExternalSourceSettingsAccessor.Paths).ToArray();
-                _externalCodePathsCollectionEdit = new StringCollectionEdit(Environment, "External source paths:", null, _mainWindow, _windowsHookManager, _formValidators)
+                string[] externalCodePaths = _settings.EnumIndexedValues(SettingsAccessor.Paths).ToArray();
+                _externalCodePathsCollectionEdit = new StringCollectionEdit(Environment, "External source directories:", null, _mainWindow, _windowsHookManager, _formValidators)
                                                    {
                                                        Dock = DockStyle.Fill
                                                    };
@@ -115,7 +112,7 @@ namespace EveningCreek.ReSharper.ExternalSources
         /// </summary>
         public override bool OnOk()
         {
-            Expression<Func<ExternalSourceSettingsKey, IIndexedEntry<string, string>>> generatedFileMasks = key => key.Paths;
+            Expression<Func<SettingsKey, IIndexedEntry<string, string>>> generatedFileMasks = key => key.Paths;
 
             string[] addedPaths = _externalCodePathsCollectionEdit.Items.Value;
             var currentPaths = new HashSet<string>();

@@ -8,4 +8,4 @@
 
 :: Package
 @if not exist %OUTPUT_DIR% @mkdir %OUTPUT_DIR%
-%SOURCE_DIR%\.nuget\NuGet.exe pack %INSTALL_DIR%\resharper-externalsources.nuspec -BasePath %SOURCE_DIR%\EveningCreek.ReSharper.ExternalSources -NoPackageAnalysis -OutputDirectory %OUTPUT_DIR%
+%SOURCE_DIR%\.nuget\NuGet.exe pack %INSTALL_DIR%\resharper-externalcode.nuspec -BasePath %SOURCE_DIR%\EveningCreek.ReSharper.ExternalCode -NoPackageAnalysis -OutputDirectory %OUTPUT_DIR%

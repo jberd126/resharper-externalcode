@@ -2,10 +2,10 @@
 using JetBrains.Application.Settings.Store;
 using JetBrains.ReSharper.Settings;
 
-namespace EveningCreek.ReSharper.ExternalSources
+namespace EveningCreek.ReSharper.ExternalCode
 {
-    [SettingsKey(typeof(CodeInspectionSettings), "External Sources")]
-    public class ExternalSourceSettingsKey
+    [SettingsKey(typeof(CodeInspectionSettings), "External Code")]
+    public class SettingsKey
     {
         [SettingsIndexedEntry("Paths")]
         public IIndexedEntry<string, string> Paths { get; set; }

@@ -27,7 +27,7 @@ namespace EveningCreek.ReSharper.ExternalCode
     ///     The options page intended to display just after "Generated Code" options which has sequence value of 1.
     /// </remarks>
     [OptionsPage(Pid, "External Code", typeof(ExternalSourcesThemedIcons.ExternalSources), ParentId = "CodeInspection", Sequence = 1.01)]
-    public class OptionsPage : AStackPanelOptionsPage
+    public class ExternalCodeOptionsPage : AStackPanelOptionsPage
     {
         public const string Pid = "CodeInspectionExternalCodeSettings";
 
@@ -39,7 +39,7 @@ namespace EveningCreek.ReSharper.ExternalCode
         private readonly IWindowsHookManager _windowsHookManager;
         private StringCollectionEdit _externalCodePathsCollectionEdit;
 
-        public OptionsPage(
+        public ExternalCodeOptionsPage(
             IUIApplication environment,
             OptionsSettingsSmartContext settings,
             Lifetime lifetime,
@@ -92,12 +92,13 @@ namespace EveningCreek.ReSharper.ExternalCode
                 EventHandler handler = (sender, args) => sizeEvent.FireIncoming();
                 _lifetime.AddBracket(() => SizeChanged += handler, () => SizeChanged -= handler);
 
-                const string titleCaption = "Add paths to external directories not included in projects. Exclusions specified in Generated Code still apply.";
+                const string titleCaption = "Specify external files and directories to include in the code inspection. " + 
+                                            "Exclusions specified in the Generated Code settings apply.";
                 var titleLabel = new Controls.Label(titleCaption) {AutoSize = true, Dock = DockStyle.Fill};
                 tablePanel.Controls.Add(titleLabel);
 
-                string[] externalCodePaths = _settings.EnumIndexedValues(SettingsAccessor.Paths).ToArray();
-                _externalCodePathsCollectionEdit = new StringCollectionEdit(Environment, "External source directories:", null, _mainWindow, _windowsHookManager, _formValidators)
+                string[] externalCodePaths = _settings.EnumIndexedValues(ExternalCodeSettingsAccessor.Paths).ToArray();
+                _externalCodePathsCollectionEdit = new StringCollectionEdit(Environment, "External files and directories:", null, _mainWindow, _windowsHookManager, _formValidators)
                                                    {
                                                        Dock = DockStyle.Fill
                                                    };
@@ -112,7 +113,7 @@ namespace EveningCreek.ReSharper.ExternalCode
         /// </summary>
         public override bool OnOk()
         {
-            Expression<Func<SettingsKey, IIndexedEntry<string, string>>> generatedFileMasks = key => key.Paths;
+            Expression<Func<ExternalCodeSettingsKey, IIndexedEntry<string, string>>> generatedFileMasks = key => key.Paths;
 
             string[] addedPaths = _externalCodePathsCollectionEdit.Items.Value;
             var currentPaths = new HashSet<string>();

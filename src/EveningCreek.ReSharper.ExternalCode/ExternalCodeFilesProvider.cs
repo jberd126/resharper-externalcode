@@ -15,7 +15,7 @@ using JetBrains.Util;
 namespace EveningCreek.ReSharper.ExternalCode
 {
     [SolutionComponent]
-    public class FilesProvider : IProjectPsiModuleProviderFilter
+    public class ExternalCodeFilesProvider : IProjectPsiModuleProviderFilter
     {
         private readonly ChangeManager _changeManager;
         private readonly DocumentManager _documentManager;
@@ -25,7 +25,7 @@ namespace EveningCreek.ReSharper.ExternalCode
         private readonly ISettingsStore _settingsStore;
         private readonly IShellLocks _shellLocks;
 
-        public FilesProvider(
+        public ExternalCodeFilesProvider(
             IProjectFileExtensions projectFileExtensions,
             PsiProjectFileTypeCoordinator projectFileTypeCoordinator,
             ChangeManager changeManager,
@@ -51,9 +51,9 @@ namespace EveningCreek.ReSharper.ExternalCode
                 return null;
             }
 
-            SettingsKey settingsKey = _settingsStore
+            ExternalCodeSettingsKey settingsKey = _settingsStore
                 .BindToContextTransient(ContextRange.ApplicationWide)
-                .GetKey<SettingsKey>(SettingsOptimization.OptimizeDefault);
+                .GetKey<ExternalCodeSettingsKey>(SettingsOptimization.OptimizeDefault);
 
             IEnumerable<string> paths = settingsKey
                 .Paths

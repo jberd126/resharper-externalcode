@@ -5,7 +5,7 @@ using JetBrains.ReSharper.Settings;
 namespace EveningCreek.ReSharper.ExternalCode
 {
     [SettingsKey(typeof(CodeInspectionSettings), "External Code")]
-    public class SettingsKey
+    public class ExternalCodeSettingsKey
     {
         [SettingsIndexedEntry("Paths")]
         public IIndexedEntry<string, string> Paths { get; set; }

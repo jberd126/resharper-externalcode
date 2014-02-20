@@ -4,7 +4,7 @@
 @set OUTPUT_DIR=%BASE_DIR%output
 
 :: Build
-%windir%\Microsoft.NET\Framework\v4.0.30319\msbuild.exe %SOURCE_DIR%\EveningCreek.ReSharper.ExternalSources.sln -verbosity:m
+%windir%\Microsoft.NET\Framework\v4.0.30319\msbuild.exe %SOURCE_DIR%\EveningCreek.ReSharper.ExternalCode.sln -verbosity:m
 
 :: Package
 @if not exist %OUTPUT_DIR% @mkdir %OUTPUT_DIR%

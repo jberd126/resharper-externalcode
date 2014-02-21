@@ -37,7 +37,9 @@ ReSharper supports the concept of setting layers where settings can be **persona
 
 4. In the right pane, add/edit/remove paths that contain external source files.
 
-5. Click **Save** to save the changes and close the dialog.
+5. Click **Save** to save the changes and close the dialog. <br />**Changes do not take affect until project is reloaded.**
+
+Paths may be relative or absolute to files or directories. Relative paths are relative to the directory containing the project.
 
 For more information regarding ReSharper's options sharing, refer to [Managing and Sharing Options](http://www.jetbrains.com/resharper/webhelp/Sharing_Configuration_Options.html).
 

@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>ReSharper.ExternalCode</id>
-    <version>1.0.0-preview</version>
+    <version>1.0.0</version>
     <title>External Code</title>
     <authors>Jason Morse</authors>
     <owners>Jason Morse</owners>
@@ -11,7 +11,7 @@
     <licenseUrl>https://raw.github.com/jberd126/resharper-externalcode/master/license.txt</licenseUrl>
     <iconUrl>https://raw.github.com/jberd126/resharper-externalcode/master/icon.png</iconUrl>
     <copyright>Copyright &#x00A9; 2014 Jason Morse</copyright>
-    <description>Adds support for specifying external sources in ReSharper.</description>
+    <description>Provides external file support for ReSharper code inspection.</description>
     <releaseNotes>Initial release.</releaseNotes>
     <dependencies>
       <dependency id="ReSharper" version="8.1" />
@@ -20,7 +20,6 @@
   </metadata>
   <files>
     <!-- ReSharper 8.1 -->
-    <file src="bin\v8.1\*.dll" target="ReSharper\v8.1\plugins\" />
-    <file src="bin\v8.1\*.pdb" target="ReSharper\v8.1\plugins\" />
+    <file src="bin\v8.1\resharper-externalcode.*" target="ReSharper\v8.1\plugins\" />
   </files>
 </package>

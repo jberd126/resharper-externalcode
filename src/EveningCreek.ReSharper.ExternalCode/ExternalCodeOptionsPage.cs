@@ -31,7 +31,7 @@ namespace EveningCreek.ReSharper.ExternalCode
     {
         public const string Pid = "CodeInspectionExternalCodeSettings";
 
-        private const int _margin = 10;        
+        private const int _margin = 10;
         private readonly FormValidators _formValidators;
         private readonly Lifetime _lifetime;
         private readonly IMainWindow _mainWindow;
@@ -92,9 +92,13 @@ namespace EveningCreek.ReSharper.ExternalCode
                 EventHandler handler = (sender, args) => sizeEvent.FireIncoming();
                 _lifetime.AddBracket(() => SizeChanged += handler, () => SizeChanged -= handler);
 
-                const string titleCaption = "Specify external files and directories to include in the code inspection. " + 
-                                            "Exclusions specified in the Generated Code settings apply.";
-                var titleLabel = new Controls.Label(titleCaption) {AutoSize = true, Dock = DockStyle.Fill};
+                string titleCaption = "Specify external file and directory paths to include in the code inspection. " +
+                                      "Relative paths are relative to the directory containing the project. " +
+                                      "Exclusions specified in the Generated Code settings apply." +
+                                      System.Environment.NewLine +
+                                      "NOTE: Changes do not take affect until project is loaded." +
+                                      System.Environment.NewLine;
+                var titleLabel = new Controls.Label(titleCaption) {AutoSize = true, Dock = DockStyle.Top};
                 tablePanel.Controls.Add(titleLabel);
 
                 string[] externalCodePaths = _settings.EnumIndexedValues(ExternalCodeSettingsAccessor.Paths).ToArray();

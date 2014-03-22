@@ -7,7 +7,7 @@
 [assembly: AssemblyCopyright("Copyright © EveningCreek, 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("1.0.0.*")]
+[assembly: AssemblyVersion("1.0.1.*")]
 
 #if DEBUG
 [assembly: AssemblyConfiguration("DEBUG")]

@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\JetBrains.ReSharper.SDK.8.1.555\build\JetBrains.ReSharper.SDK.Props" Condition="Exists('..\packages\JetBrains.ReSharper.SDK.8.1.555\build\JetBrains.ReSharper.SDK.Props')" />
+  <Import Project="..\packages\JetBrains.ReSharper.SDK.8.2.1158\build\JetBrains.ReSharper.SDK.Props" Condition="Exists('..\packages\JetBrains.ReSharper.SDK.8.2.1158\build\JetBrains.ReSharper.SDK.Props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{CAD067D7-17DF-4556-B117-B87F5B3C39A1}</ProjectGuid>
+    <ProjectGuid>{C7E737BC-C2D0-4615-BE9D-A68E90989084}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EveningCreek.ReSharper.ExternalCode</RootNamespace>
@@ -21,8 +21,8 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\v8.1\</OutputPath>
-    <BaseIntermediateOutputPath>obj\v8.1\</BaseIntermediateOutputPath>
+    <OutputPath>bin\v8.2\</OutputPath>
+    <BaseIntermediateOutputPath>obj\v8.2\</BaseIntermediateOutputPath>
     <DefineConstants>TRACE;DEBUG;JET_MODE_ASSERT;RESHARPER_8</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -30,8 +30,8 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\v8.1\</OutputPath>
-    <BaseIntermediateOutputPath>obj\v8.1\</BaseIntermediateOutputPath>
+    <OutputPath>bin\v8.2\</OutputPath>
+    <BaseIntermediateOutputPath>obj\v8.2\</BaseIntermediateOutputPath>
     <DefineConstants>TRACE;RESHARPER_8</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -70,7 +70,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!--<Import Project="EveningCreek.ReSharper.ExternalSources.targets" />-->
-  <Import Project="..\packages\JetBrains.ReSharper.SDK.8.1.555\build\JetBrains.ReSharper.SDK.Targets" Condition="Exists('..\packages\JetBrains.ReSharper.SDK.8.1.555\build\JetBrains.ReSharper.SDK.Targets')" />
+  <Import Project="..\packages\JetBrains.ReSharper.SDK.8.2.1158\build\JetBrains.ReSharper.SDK.Targets" Condition="Exists('..\packages\JetBrains.ReSharper.SDK.8.2.1158\build\JetBrains.ReSharper.SDK.Targets')" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -85,7 +85,7 @@
     </BuildDependsOn>
   </PropertyGroup>
   <Target Name="_RemoveIncompatibleReSharperReferences" Condition=" '$(TargetFrameworkVersion)' == 'v3.5' ">
-    <!-- Remove ReSharper 8.1 SDK for .NET 3.5 references that are compiled against .NET 4.0. -->
+    <!-- Remove ReSharper 8 SDK for .NET 3.5 references that are compiled against .NET 4.0. -->
     <Message Text="Removing ReSharper SDK references that are incompatible with .NET v3.5" />
     <ItemGroup>
       <_IncompatibleReSharperReference Include="JetBrains.ReSharper.Features.NuGet;JetBrains.Platform.ReSharper.Shell.Extensions;JetBrains.ReSharper.Features.Architecture.yFiles" />
